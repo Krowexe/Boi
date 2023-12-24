@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:coomer_android/CreatorDetailsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
@@ -35,23 +36,57 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    fetchCreatorsList();
+    loadCreatorsList();
+  }
+
+  Future<void> loadCreatorsList() async {
+    try {
+      // Attempt to load data from local storage
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String cachedData = prefs.getString('creatorsList') ?? '';
+
+      if (cachedData.isNotEmpty) {
+        final List<dynamic> cachedList = json.decode(cachedData);
+        setState(() {
+          creatorsList = List<Map<String, dynamic>>.from(cachedList);
+          filteredCreatorsList = creatorsList;
+          services = creatorsList.map<String>((creator) => creator['service']).toSet().toList();
+          services.insert(0, 'All');
+          _sortList();
+        });
+      }
+
+      // Fetch data from the internet to ensure it is up to date
+      fetchCreatorsList();
+    } catch (e) {
+      print('Error loading creators list: $e');
+      // Handle the error as needed
+    }
   }
 
   Future<void> fetchCreatorsList() async {
-    final Uri url = Uri.parse('https://coomer.su/api/v1/creators.txt');
-    final response = await http.get(url);
+    try {
+      final Uri url = Uri.parse('https://coomer.su/api/v1/creators.txt');
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      setState(() {
-        creatorsList = List<Map<String, dynamic>>.from(json.decode(response.body));
-        filteredCreatorsList = creatorsList;
-        services = creatorsList.map<String>((creator) => creator['service']).toSet().toList();
-        services.insert(0, 'All');
-        _sortList();
-      });
-    } else {
-      throw Exception('Failed to load creators');
+      if (response.statusCode == 200) {
+        setState(() {
+          creatorsList = List<Map<String, dynamic>>.from(json.decode(response.body));
+          filteredCreatorsList = creatorsList;
+          services = creatorsList.map<String>((creator) => creator['service']).toSet().toList();
+          services.insert(0, 'All');
+          _sortList();
+        });
+
+        // Save the data to local storage
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('creatorsList', json.encode(creatorsList));
+      } else {
+        throw Exception('Failed to load creators');
+      }
+    } catch (e) {
+      print('Error fetching creators list: $e');
+      // Handle the error as needed
     }
   }
 
