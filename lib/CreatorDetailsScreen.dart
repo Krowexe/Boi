@@ -24,12 +24,12 @@ class _CreatorDetailsScreenState extends State<CreatorDetailsScreen> {
     final String service = widget.creator['service'];
     final String id = widget.creator['id'];
     final Uri url = Uri.parse('https://coomer.su/api/v1/$service/user/$id');
-    
+
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
       setState(() {
-        posts = List<Map<String, dynamic>>.from(json.decode(response.body));
+        posts = List<Map<String, dynamic>>.from(json.decode(utf8.decode(response.bodyBytes)));
       });
     } else {
       throw Exception('Failed to load user posts');
@@ -43,15 +43,10 @@ class _CreatorDetailsScreenState extends State<CreatorDetailsScreen> {
         title: Text('${widget.creator['name']} - ${widget.creator['service']}'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('ID: ${widget.creator['id']}'),
-            Text('Name: ${widget.creator['name']}'),
-            Text('Service: ${widget.creator['service']}'),
-            SizedBox(height: 16),
-            Text('Posts:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             Expanded(
               child: ListView.builder(
                 itemCount: posts.length,
@@ -68,8 +63,8 @@ class _CreatorDetailsScreenState extends State<CreatorDetailsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Title: ${post['title']}'),
-                              Text('Content: ${post['content']}'),
+                              Text('${post['title']}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
+                              Text('${post['content']}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
                             ],
                           ),
                         ),
