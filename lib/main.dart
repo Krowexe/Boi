@@ -25,8 +25,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<Map<String, dynamic>> creatorsList = [];
   List<Map<String, dynamic>> filteredCreatorsList = [];
+  List<String> services = [];
 
   TextEditingController searchController = TextEditingController();
+  String selectedService = 'All';
 
   @override
   void initState() {
@@ -42,16 +44,20 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         creatorsList = List<Map<String, dynamic>>.from(json.decode(response.body));
         filteredCreatorsList = creatorsList;
+        services = creatorsList.map<String>((creator) => creator['service']).toSet().toList();
+        services.insert(0, 'All');
       });
     } else {
       throw Exception('Failed to load creators');
     }
   }
 
-  void searchByName(String query) {
+  void searchByNameAndService(String nameQuery, String serviceQuery) {
     setState(() {
       filteredCreatorsList = creatorsList
-          .where((creator) => creator['name'].toLowerCase().contains(query.toLowerCase()))
+          .where((creator) =>
+              creator['name'].toLowerCase().contains(nameQuery.toLowerCase()) &&
+              (serviceQuery == 'All' || creator['service'] == serviceQuery))
           .toList();
     });
   }
@@ -66,13 +72,35 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: searchController,
-              onChanged: (value) => searchByName(value),
-              decoration: InputDecoration(
-                labelText: 'Search by Name',
-                prefixIcon: Icon(Icons.search),
-              ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: (value) => searchByNameAndService(value, selectedService),
+                    decoration: InputDecoration(
+                      labelText: 'Search by Name',
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                DropdownButton<String>(
+                  value: selectedService,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedService = value!;
+                      searchByNameAndService(searchController.text, selectedService);
+                    });
+                  },
+                  items: services.map((service) {
+                    return DropdownMenuItem<String>(
+                      value: service,
+                      child: Text(service),
+                    );
+                  }).toList(),
+                ),
+              ],
             ),
           ),
           Expanded(
