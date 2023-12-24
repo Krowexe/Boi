@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Creators List',
+      title: 'Coomer.Party',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Creators List'),
+        title: Text('Coomer.Party'),
       ),
       body: Column(
         children: [
@@ -146,8 +146,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     itemBuilder: (context, index) {
                       final creator = filteredCreatorsList[index];
                       return ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: NetworkImage('https://img.coomer.su/icons/${creator['service']}/${creator['id']}'),
+                        ),
                         title: Text(creator['name']),
-                        subtitle: Text('Service: ${creator['service']}, Favorited: ${creator['favorited']}'),
+                        subtitle: Text('${creator['service']} \n${creator['favorited']} ★'),
                         // Add more details if needed
                       );
                     },
