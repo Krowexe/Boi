@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:coomer_android/CreatorDetailsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -146,6 +147,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     itemBuilder: (context, index) {
                       final creator = filteredCreatorsList[index];
                       return ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreatorDetailsScreen(creator: creator),
+                            ),
+                          );
+                        },
                         leading: CircleAvatar(
                           backgroundImage: NetworkImage('https://img.coomer.su/icons/${creator['service']}/${creator['id']}'),
                         ),
