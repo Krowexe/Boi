@@ -26,9 +26,10 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Map<String, dynamic>> creatorsList = [];
   List<Map<String, dynamic>> filteredCreatorsList = [];
   List<String> services = [];
+  String selectedService = 'All';
+  String selectedSort = 'Popularity';
 
   TextEditingController searchController = TextEditingController();
-  String selectedService = 'All';
 
   @override
   void initState() {
@@ -46,9 +47,18 @@ class _MyHomePageState extends State<MyHomePage> {
         filteredCreatorsList = creatorsList;
         services = creatorsList.map<String>((creator) => creator['service']).toSet().toList();
         services.insert(0, 'All');
+        _sortList();
       });
     } else {
       throw Exception('Failed to load creators');
+    }
+  }
+
+  void _sortList() {
+    if (selectedSort == 'Alphabetical') {
+      filteredCreatorsList.sort((a, b) => a['name'].compareTo(b['name']));
+    } else if (selectedSort == 'Popularity') {
+      filteredCreatorsList.sort((a, b) => b['favorited'].compareTo(a['favorited']));
     }
   }
 
@@ -59,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
               creator['name'].toLowerCase().contains(nameQuery.toLowerCase()) &&
               (serviceQuery == 'All' || creator['service'] == serviceQuery))
           .toList();
+      _sortList();
     });
   }
 
@@ -103,6 +114,30 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedSort = 'Alphabetical';
+                    _sortList();
+                  });
+                },
+                child: Text('Sort Alphabetically'),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedSort = 'Popularity';
+                    _sortList();
+                  });
+                },
+                child: Text('Sort by Popularity'),
+              ),
+            ],
+          ),
           Expanded(
             child: creatorsList.isEmpty
                 ? Center(child: CircularProgressIndicator())
@@ -112,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       final creator = filteredCreatorsList[index];
                       return ListTile(
                         title: Text(creator['name']),
-                        subtitle: Text('Service: ${creator['service']}'),
+                        subtitle: Text('Service: ${creator['service']}, Favorited: ${creator['favorited']}'),
                         // Add more details if needed
                       );
                     },
