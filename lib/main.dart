@@ -53,7 +53,10 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           creatorsList = List<Map<String, dynamic>>.from(cachedList);
           filteredCreatorsList = creatorsList;
-          services = creatorsList.map<String>((creator) => creator['service']).toSet().toList();
+          services = creatorsList
+              .map<String>((creator) => creator['service'])
+              .toSet()
+              .toList();
           services.insert(0, 'All');
           _sortList();
         });
@@ -74,9 +77,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
       if (response.statusCode == 200) {
         setState(() {
-          creatorsList = List<Map<String, dynamic>>.from(json.decode(response.body));
+          creatorsList = List<Map<String, dynamic>>.from(
+              json.decode(utf8.decode(response.bodyBytes)));
           filteredCreatorsList = creatorsList;
-          services = creatorsList.map<String>((creator) => creator['service']).toSet().toList();
+          services = creatorsList
+              .map<String>((creator) => creator['service'])
+              .toSet()
+              .toList();
           services.insert(0, 'All');
           _sortList();
         });
@@ -97,7 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
     if (selectedSort == 'Alphabetical') {
       filteredCreatorsList.sort((a, b) => a['name'].compareTo(b['name']));
     } else if (selectedSort == 'Popularity') {
-      filteredCreatorsList.sort((a, b) => b['favorited'].compareTo(a['favorited']));
+      filteredCreatorsList
+          .sort((a, b) => b['favorited'].compareTo(a['favorited']));
     }
   }
 
@@ -127,7 +135,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                   child: TextField(
                     controller: searchController,
-                    onChanged: (value) => searchByNameAndService(value, selectedService),
+                    onChanged: (value) =>
+                        searchByNameAndService(value, selectedService),
                     decoration: InputDecoration(
                       labelText: 'Search by Name',
                       prefixIcon: Icon(Icons.search),
@@ -140,7 +149,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   onChanged: (value) {
                     setState(() {
                       selectedService = value!;
-                      searchByNameAndService(searchController.text, selectedService);
+                      searchByNameAndService(
+                          searchController.text, selectedService);
                     });
                   },
                   items: services.map((service) {
@@ -189,15 +199,18 @@ class _MyHomePageState extends State<MyHomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CreatorDetailsScreen(creator: creator),
+                              builder: (context) =>
+                                  CreatorDetailsScreen(creator: creator),
                             ),
                           );
                         },
                         leading: CircleAvatar(
-                          backgroundImage: NetworkImage('https://img.coomer.su/icons/${creator['service']}/${creator['id']}'),
+                          backgroundImage: NetworkImage(
+                              'https://img.coomer.su/icons/${creator['service']}/${creator['id']}'),
                         ),
                         title: Text(creator['name']),
-                        subtitle: Text('${creator['service']} \n${creator['favorited']} ★'),
+                        subtitle: Text(
+                            '${creator['service']} \n${creator['favorited']} ★'),
                         // Add more details if needed
                       );
                     },
