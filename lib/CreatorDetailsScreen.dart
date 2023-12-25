@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:path_provider/path_provider.dart';
-
+import 'tools/saveImageLocally.dart';
+import 'ui/InstagramCard.dart';
+import 'ui/SimpleCard.dart';
 
 class CreatorDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> creator;
@@ -34,22 +36,11 @@ class _CreatorDetailsScreenState extends State<CreatorDetailsScreen> {
 
     if (response.statusCode == 200) {
       setState(() {
-        posts = List<Map<String, dynamic>>.from(json.decode(utf8.decode(response.bodyBytes)));
+        posts = List<Map<String, dynamic>>.from(
+            json.decode(utf8.decode(response.bodyBytes)));
       });
     } else {
       throw Exception('Failed to load user posts');
-    }
-  }
-
-  Future<void> saveImageLocally(String imageUrl) async {
-    try {
-      final response = await http.get(Uri.parse(imageUrl));
-      final bytes = response.bodyBytes;
-      final appDir = await getApplicationDocumentsDirectory();
-      final file = File('${appDir.path}/cached_images/${DateTime.now().millisecondsSinceEpoch}.png');
-      await file.writeAsBytes(bytes);
-    } catch (e) {
-      print('Error saving image: $e');
     }
   }
 
@@ -74,29 +65,13 @@ class _CreatorDetailsScreenState extends State<CreatorDetailsScreen> {
                   // Save the image locally when it is first loaded
                   saveImageLocally(imageUrl);
 
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CachedNetworkImage(
-                          imageUrl: imageUrl,
-                          placeholder: (context, url) => CircularProgressIndicator(),
-                          errorWidget: (context, url, error) => Icon(Icons.error),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('${post['title']}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
-                              Text('${post['content']}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                  return InstagramCard(
+                    post: post, // Pass post as a parameter
                   );
+                  /*
+                  return SimpleCard(
+                    post: post, // Pass post as a parameter
+                  );*/
                 },
               ),
             ),

@@ -3,17 +3,20 @@ import 'package:coomer_android/CreatorDetailsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'app/app.dart';
 
 void main() => runApp(MyApp());
+final theme = AppTheme();
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Coomer.Party',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      debugShowCheckedModeBanner: false,
+      theme: theme.lightTheme,
+      darkTheme: theme.darkTheme,
+      themeMode: ThemeMode.dark,
       home: MyHomePage(),
     );
   }
