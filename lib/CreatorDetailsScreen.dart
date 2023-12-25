@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:path_provider/path_provider.dart';
 import 'tools/saveImageLocally.dart';
-import 'ui/InstagramCard.dart';
-import 'ui/SimpleCard.dart';
+import 'ui/instagram_card.dart';
+import 'ui/simple_card.dart';
 
 class CreatorDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> creator;

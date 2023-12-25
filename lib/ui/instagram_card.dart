@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../tools/saveImageLocally.dart';
@@ -50,7 +52,7 @@ class InstagramCard extends StatelessWidget {
                       Icon(Icons.favorite_border, size: 18),
                       SizedBox(width: 4),
                       Text(
-                        post['favorited'].toString(),
+                        Random().nextInt(100).toString(),
                         style: TextStyle(fontSize: 16),
                       ),
                       SizedBox(width: 16),
