@@ -17,6 +17,9 @@ class InstagramCard extends StatelessWidget {
     // Save the image locally when it is first loaded
     saveImageLocally(imageUrl);
 
+    // Determine if the URL is a video based on the file extension or any other metadata
+    bool isVideo = imageUrl.toLowerCase().endsWith('.mp4');
+
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8),
       elevation: 0, // Adjust the elevation for a shadow effect
