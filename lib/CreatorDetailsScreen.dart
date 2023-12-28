@@ -60,7 +60,7 @@ class _CreatorDetailsScreenState extends State<CreatorDetailsScreen> {
                 itemCount: posts.length,
                 itemBuilder: (context, index) {
                   final post = posts[index];
-                  final imageUrl = 'https://coomer.su${post['file']['path']}';
+                  final imageUrl = 'https://img.coomer.su/thumbnail/data${post['file']['path']}';
 
                   // Save the image locally when it is first loaded
                   saveImageLocally(imageUrl);

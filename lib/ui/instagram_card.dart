@@ -11,7 +11,8 @@ class InstagramCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = 'https://coomer.su${post['file']['path']}';
+    final imageUrl =
+        'https://img.coomer.su/thumbnail/data${post['file']['path']}';
 
     // Save the image locally when it is first loaded
     saveImageLocally(imageUrl);
