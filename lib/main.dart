@@ -7,7 +7,8 @@ import 'package:media_kit/media_kit.dart'; // Provides [Player], [Media], [Playl
 import 'package:media_kit_video/media_kit_video.dart'; // Provides [VideoController] & [Video] etc.
 import 'app/app.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
+import 'pages/home_page.dart';
+import 'pages/settings_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -129,101 +130,45 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Coomer.Party'),
+        title: const Text('Coomer.Party'),
       ),
-      body: Column(
+      body: IndexedStack(
+        index: _currentIndex,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: searchController,
-                    onChanged: (value) =>
-                        searchByNameAndService(value, selectedService),
-                    decoration: InputDecoration(
-                      labelText: 'Search by Name',
-                      prefixIcon: Icon(Icons.search),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                DropdownButton<String>(
-                  value: selectedService,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedService = value!;
-                      searchByNameAndService(
-                          searchController.text, selectedService);
-                    });
-                  },
-                  items: services.map((service) {
-                    return DropdownMenuItem<String>(
-                      value: service,
-                      child: Text(service),
-                    );
-                  }).toList(),
-                ),
-              ],
-            ),
+          HomePageBody(
+            creatorsList: creatorsList,
+            filteredCreatorsList: filteredCreatorsList,
+            services: services,
+            selectedService: selectedService,
+            selectedSort: selectedSort,
+            searchController: searchController,
+            searchByNameAndService: searchByNameAndService,
+            sortList: _sortList,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    selectedSort = 'Alphabetical';
-                    _sortList();
-                  });
-                },
-                child: Text('Sort Alphabetically'),
-              ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    selectedSort = 'Popularity';
-                    _sortList();
-                  });
-                },
-                child: Text('Sort by Popularity'),
-              ),
-            ],
+          SettingsPage(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
-          Expanded(
-            child: creatorsList.isEmpty
-                ? Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    itemCount: filteredCreatorsList.length,
-                    itemBuilder: (context, index) {
-                      final creator = filteredCreatorsList[index];
-                      return ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  CreatorDetailsScreen(creator: creator),
-                            ),
-                          );
-                        },
-                        leading: CircleAvatar(
-                          backgroundImage: CachedNetworkImageProvider(
-                              'https://img.coomer.su/icons/${creator['service']}/${creator['id']}'),
-                        ),
-                        title: Text(creator['name']),
-                        subtitle: Text(
-                            '${creator['service']} \n${creator['favorited']} ★'),
-                        // Add more details if needed
-                      );
-                    },
-                  ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),
