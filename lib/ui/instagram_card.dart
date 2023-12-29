@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:media_kit/media_kit.dart'; // Provides [Player], [Media], [Playlist] etc.
 import 'package:media_kit_video/media_kit_video.dart'; // Provides [VideoController] & [Video] etc.
 import '../tools/saveImageLocally.dart';
+import '../creator_post_details_screen.dart';
 
 class InstagramCard extends StatelessWidget {
   final Map<String, dynamic> post;
@@ -24,7 +25,8 @@ class InstagramCard extends StatelessWidget {
     final controller = VideoController(player);
 
     // Determine if the URL is a video based on the file extension or any other metadata
-    bool isVideo = (imageUrl.toLowerCase().endsWith('.mp4') || imageUrl.toLowerCase().endsWith('.m4v'));
+    bool isVideo = (imageUrl.toLowerCase().endsWith('.mp4') ||
+        imageUrl.toLowerCase().endsWith('.m4v'));
 
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8),
@@ -32,11 +34,16 @@ class InstagramCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           // Handle card tap
-          if (isVideo) {
-            // Open video when tapped
-            player.open(Media(
-                'https://coomer.su${post['file']['path']}'));
-          }
+          //if (isVideo) {
+          // Open video when tapped
+          //player.open(Media('https://coomer.su${post['file']['path']}'));
+          //}
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MyScreen(post: post),
+            ),
+          );
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,6 +95,7 @@ class InstagramCard extends StatelessWidget {
   }
 }
 
+/*
 class VideoPlayerWidget extends StatelessWidget {
   final VideoController controller;
 
@@ -96,9 +104,52 @@ class VideoPlayerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Use AspectRatio to maintain a specific aspect ratio for the video player
-    return AspectRatio(
-      aspectRatio: 16 / 9, // Adjust the aspect ratio as needed
+    return SizedBox(
+      //aspectRatio: 16 / 9, // Adjust the aspect ratio as needed
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.width * 9.0 / 16.0,
       child: Video(controller: controller),
     );
+  }
+}*/
+
+class VideoPlayerWidget extends StatefulWidget {
+  final VideoController controller;
+
+  VideoPlayerWidget({required this.controller});
+
+  @override
+  _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
+}
+
+class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+  bool isPlaying = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // Start/stop playback when the player area is tapped
+        if (isPlaying) {
+          widget.controller.player.pause();
+        } else {
+          widget.controller.player.play();
+        }
+        setState(() {
+          isPlaying = !isPlaying;
+        });
+      },
+      child: AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Video(controller: widget.controller),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    // Dispose of the controller when the widget is disposed
+    widget.controller.player.dispose();
+    super.dispose();
   }
 }
