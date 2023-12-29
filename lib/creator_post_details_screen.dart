@@ -95,7 +95,7 @@ class MyScreenState extends State<MyScreen> {
             ),
           ),*/
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.only(top: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -105,11 +105,9 @@ class MyScreenState extends State<MyScreen> {
                       fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  widget.post['file']['path'],
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 16),
+                _displayImage(widget.post['file']['path']),
+
+                //const SizedBox(height: 16),
                 // Display additional attachments
 
                 for (var i = 0; i < widget.post['attachments'].length; i++)
@@ -127,13 +125,14 @@ class MyScreenState extends State<MyScreen> {
         attachment.toLowerCase().endsWith('.m4v')) {
       debugPrint("----------------------------------------------");
       debugPrint(attachment);
-      return AspectRatio(
+      /*return AspectRatio(
         aspectRatio: 9 / 16,
         child: Video(
           controller: videoControllers[index],
           fill: Colors.red,
         ),
-      );
+      );*/
+      return _displayImage(attachment);
     } else {
       return _displayImage(attachment);
     }
@@ -143,7 +142,7 @@ class MyScreenState extends State<MyScreen> {
     return Image.network(
       'https://img.coomer.su/thumbnail/data$imagePath',
       //height: 200,
-      width: MediaQuery.of(context).size.width,
+      width: 5000,
       fit: BoxFit.cover,
     );
   }
