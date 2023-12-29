@@ -3,9 +3,16 @@ import 'package:coomer_android/CreatorDetailsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:media_kit/media_kit.dart'; // Provides [Player], [Media], [Playlist] etc.
+import 'package:media_kit_video/media_kit_video.dart'; // Provides [VideoController] & [Video] etc.
 import 'app/app.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  MediaKit.ensureInitialized();
+  runApp(MyApp());
+}
+
 final theme = AppTheme();
 
 class MyApp extends StatelessWidget {
