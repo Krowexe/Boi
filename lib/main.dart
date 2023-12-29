@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:media_kit/media_kit.dart'; // Provides [Player], [Media], [Playlist] etc.
 import 'package:media_kit_video/media_kit_video.dart'; // Provides [VideoController] & [Video] etc.
 import 'app/app.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -212,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           );
                         },
                         leading: CircleAvatar(
-                          backgroundImage: NetworkImage(
+                          backgroundImage: CachedNetworkImageProvider(
                               'https://img.coomer.su/icons/${creator['service']}/${creator['id']}'),
                         ),
                         title: Text(creator['name']),
