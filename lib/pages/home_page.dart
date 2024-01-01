@@ -34,7 +34,8 @@ class HomePageBody extends StatelessWidget {
               Expanded(
                 child: TextField(
                   controller: searchController,
-                  onChanged: (value) => searchByNameAndService(value, selectedService),
+                  onChanged: (value) =>
+                      searchByNameAndService(value, selectedService),
                   decoration: InputDecoration(
                     labelText: 'Search by Name',
                     prefixIcon: Icon(Icons.search),

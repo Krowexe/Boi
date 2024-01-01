@@ -1,16 +1,30 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:media_kit/media_kit.dart'; // Provides [Player], [Media], [Playlist] etc..
 import 'app/app.dart';
 import 'pages/home_page.dart';
 import 'pages/settings_page.dart';
 
+
+
+AppMetricaConfig get _config =>
+    const AppMetricaConfig('Your api key', logs: true);
+
+/*
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
   runApp(MyApp());
+}*/
+
+Future<void> main() async {
+  AppMetrica.runZoneGuarded(() {
+    WidgetsFlutterBinding.ensureInitialized();
+    AppMetrica.activate(_config);
+    runApp(MyApp());
+  });
 }
 
 final theme = AppTheme();
