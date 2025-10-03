@@ -2,43 +2,55 @@ name: Flutter Build
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout source
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.13.0' # This Flutter version includes Dart >=3.2.3
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.13.5'  # Specify a specific stable version
+      - name: Display Flutter and Dart version
+        run: |
+          flutter --version
+          dart --version
 
-    - name: Install dependencies
-      run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
 
-    - name: Analyze code
-      run: flutter analyze
+      - name: Run Analyzer
+        run: flutter analyze
 
-    - name: Run tests
-      run: flutter test || true   # don’t fail build if tests fail (optional)
+      - name: Run Tests
+        run: flutter test
 
-    - name: Build APK
-      run: flutter build apk --release
+      - name: Build APK (Android)
+        run: flutter build apk --debug
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: release-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
+      # Uncomment for web build:
+      # - name: Build Web
+      #   run: flutter build web
+
+      # Uncomment for iOS build (macOS runners required):
+      # - name: Build iOS
+      #   run: flutter build ios --debug
+
+      # Add artifact upload steps if needed
+      - name: Upload APK
+         uses: actions/upload-artifact@v3
+         with:
+           name: app-apk
+           path: build/app/outputs/flutter-apk/app-debug.apk
+
+      # Add any additional steps your project requires
